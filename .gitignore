@@ -1,0 +1,15 @@
+# Node
+node_modules
+.env
+coverage
+coverage.json
+
+#Hardhat files
+cache
+artifacts
+
+# Encryped JSON Wallets
+keystore
+
+# Ganache
+.ganache-db
