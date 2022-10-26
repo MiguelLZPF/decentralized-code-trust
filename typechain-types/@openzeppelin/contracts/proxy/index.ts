@@ -7,6 +7,4 @@ import type * as beacon from "./beacon";
 export type { beacon };
 import type * as transparent from "./transparent";
 export type { transparent };
-import type * as utils from "./utils";
-export type { utils };
 export type { Proxy } from "./Proxy";

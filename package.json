@@ -1,22 +1,25 @@
 {
-  "name": "hardhat-base",
+  "name": "decentralized-code-trust",
   "version": "1.0.0",
-  "description": "This is a base hardhat project for development, testing and deployment of Smart Contracts. It adds scripts and hardhat tasks for Off-Chain deployments.",
+  "description": "This project is part of the **Decentralized Trust Framework** and it aims to provide a decentralized trust for any address to trust code on Blockchain (Smart Contracts) and know wich code it trust or not",
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test"
   },
   "author": "Miguel Gómez Carpena",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@openzeppelin/contracts": "^4.7.3",
     "@types/chai": "^4.3.3",
-    "@types/node": "^18.11.3",
-    "chai": "^4.3.6",
-    "hardhat": "^2.12.0",
+    "@types/node": "^18.11.5",
     "async-file": "^2.0.2",
+    "chai": "^4.3.6",
+    "mocha-steps": "^1.3.0",
     "ganache": "^7.4.4",
-    "hardhat-contract-sizer": "^2.6.1"
+    "hardhat": "^2.12.0",
+    "hardhat-contract-sizer": "^2.6.1",
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.24"
   }
 }

@@ -1,12 +1,12 @@
-# 1. Hardhat Off-Chain Deplyments Base - HHOCDB
+# 1. Decentralized Code Trust - Decentralized Trust Framework
 
-Before run anything, make sure you run `npm install`.
+*Before run anything, make sure you run `npm install`.*
 
-This project aims to provide an easy to use _Hardhat base project_ that can be used to develop new smart contracts and then deploy them using the _new tasks provided on top_ of a basic Hardhat project. Basically it provides two main features: _Encryped JSON wallet management_ and _automated offChain deployments_ (regular and TUP Upgradeable). This project is supposed to be used in private and public-permissioned networks, but can be used in public ones changing a few parameters in the gas options.
+This project is part of the **Decentralized Trust Framework** and it aims to provide a decentralized trust for any address to trust code on Blockchain (Smart Contracts) and know wich code it trust or not. It works for both Externally Owned Accounts EOA and Smart Contracts. If it is used by an EOA it is required a duration for trust (safety reasons). This project is supposed to be used in private and public-permissioned networks, but can be used in public ones changing a few parameters in the gas options. Practical example of usage can be if you have a multiple Smart Contract project and only one is in charge of access, the rest can trust this SC and don't care about access, just limit it to the trusted contracts. But it's usage is generall. There is a Trustable abstract contract (and DumbExample) than can be inherited by this kind of contracts (but, not required).
 
 The structure follows a Hardhat project environment using **ethers**, **waffle** and **chai**. It also use **typescript** and generates smart contract types using **typechain**. The --network parameter refers to the network to be used defined in the [hardhat config file](./hardhat.config.ts).
 
-- [1. Hardhat Off-Chain Deplyments Base - HHOCDB](#1-hardhat-off-chain-deplyments-base---hhocdb)
+- [1. Decentralized Code Trust - Decentralized Trust Framework](#1-decentralized-code-trust---decentralized-trust-framework)
   - [1.1. Custom Tasks added](#11-custom-tasks-added)
   - [1.2. Configuration file constants](#12-configuration-file-constants)
   - [1.3. Manage Encryped JSON Wallets](#13-manage-encryped-json-wallets)

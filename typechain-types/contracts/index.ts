@@ -3,5 +3,7 @@
 /* eslint-disable */
 import type * as external from "./external";
 export type { external };
-export type { Lock } from "./Lock";
-export type { LockUpgr } from "./LockUpgr";
+import type * as interfaces from "./interfaces";
+export type { interfaces };
+export type { CodeTrust } from "./CodeTrust";
+export type { DumbExample } from "./DumbExample";

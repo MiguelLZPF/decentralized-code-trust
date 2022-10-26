@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as external from "./external";
-export { Lock__factory } from "./Lock__factory";
-export { LockUpgr__factory } from "./LockUpgr__factory";
+export * as interfaces from "./interfaces";
+export { CodeTrust__factory } from "./CodeTrust__factory";
+export { DumbExample__factory } from "./DumbExample__factory";

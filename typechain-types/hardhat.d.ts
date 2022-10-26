@@ -41,21 +41,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TransparentUpgradeableProxy__factory>;
     getContractFactory(
-      name: "Initializable",
+      name: "CodeTrust",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Initializable__factory>;
+    ): Promise<Contracts.CodeTrust__factory>;
+    getContractFactory(
+      name: "DumbExample",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DumbExample__factory>;
     getContractFactory(
       name: "ProxyAdmin",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ProxyAdmin__factory>;
     getContractFactory(
-      name: "Lock",
+      name: "ICodeTrust",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
-    getContractFactory(
-      name: "LockUpgr",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.LockUpgr__factory>;
+    ): Promise<Contracts.ICodeTrust__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -93,25 +93,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.TransparentUpgradeableProxy>;
     getContractAt(
-      name: "Initializable",
+      name: "CodeTrust",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Initializable>;
+    ): Promise<Contracts.CodeTrust>;
+    getContractAt(
+      name: "DumbExample",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DumbExample>;
     getContractAt(
       name: "ProxyAdmin",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ProxyAdmin>;
     getContractAt(
-      name: "Lock",
+      name: "ICodeTrust",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
-    getContractAt(
-      name: "LockUpgr",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.LockUpgr>;
+    ): Promise<Contracts.ICodeTrust>;
 
     // default types
     getContractFactory(
