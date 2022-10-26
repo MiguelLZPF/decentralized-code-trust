@@ -1,6 +1,6 @@
 # 1. Decentralized Code Trust - Decentralized Trust Framework
 
-*Before run anything, make sure you run `npm install`.*
+_Before run anything, make sure you run `npm install`._
 
 This project is part of the **Decentralized Trust Framework** and it aims to provide a decentralized trust for any address to trust code on Blockchain (Smart Contracts) and know wich code it trust or not. It works for both Externally Owned Accounts EOA and Smart Contracts. If it is used by an EOA it is required a duration for trust (safety reasons). This project is supposed to be used in private and public-permissioned networks, but can be used in public ones changing a few parameters in the gas options. Practical example of usage can be if you have a multiple Smart Contract project and only one is in charge of access, the rest can trust this SC and don't care about access, just limit it to the trusted contracts. But it's usage is generall. There is a Trustable abstract contract (and DumbExample) than can be inherited by this kind of contracts (but, not required).
 
@@ -70,13 +70,13 @@ Usage: hardhat [GLOBAL OPTIONS] generate-wallets [--batch-size <INT>] [--entropy
 
 OPTIONS:
 
-  --batch-size          Number of user wallets to be generated in batch 
-  --entropy             Wallet entropy 
-  --mnemonic-path       Mnemonic path to generate wallet from 
-  --mnemonic-phrase     Mnemonic phrase to generate wallet from 
-  --password            Wallet password 
-  --private-key         Private key to generate wallet from. Hexadecimal String format expected 
-  --relative-path       Path relative to KEYSTORE.root to store the wallets 
+  --batch-size          Number of user wallets to be generated in batch
+  --entropy             Wallet entropy
+  --mnemonic-path       Mnemonic path to generate wallet from
+  --mnemonic-phrase     Mnemonic phrase to generate wallet from
+  --password            Wallet password
+  --private-key         Private key to generate wallet from. Hexadecimal String format expected
+  --relative-path       Path relative to KEYSTORE.root to store the wallets
 
 POSITIONAL ARGUMENTS:
 
@@ -246,11 +246,11 @@ Usage: hardhat [GLOBAL OPTIONS] upgrade [--args <JSON>] --password <STRING> [--p
 
 OPTIONS:
 
-  --args                Contract initialize function's arguments if any 
-  --password            Password to decrypt the wallet 
-  --proxy               Address of the TUP proxy 
-  --proxy-admin         Address of a deloyed Proxy Admin 
-  --relative-path       Path relative to KEYSTORE.root to store the wallets 
+  --args                Contract initialize function's arguments if any
+  --password            Password to decrypt the wallet
+  --proxy               Address of the TUP proxy
+  --proxy-admin         Address of a deloyed Proxy Admin
+  --relative-path       Path relative to KEYSTORE.root to store the wallets
 
 POSITIONAL ARGUMENTS:
 
