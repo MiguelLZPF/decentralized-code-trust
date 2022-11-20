@@ -36,6 +36,7 @@ export interface IDeploy {
   mnemonicLocale: string;
   proxyAdmin: string;
   contractArgs: any;
+  noCompile: boolean;
   txValue: number;
 }
 
@@ -49,6 +50,7 @@ export interface IUpgrade {
   proxy: string;
   proxyAdmin: string;
   contractArgs: any;
+  noCompile: boolean;
 }
 
 export interface ICallContract {
@@ -57,6 +59,22 @@ export interface ICallContract {
   functionName: string;
   functionArgs: any;
   artifactPath: string;
+  relativePath?: string;
+  password: string;
+  mnemonicPhrase?: string;
+  mnemonicPath: string;
+  mnemonicLocale: string;
+}
+
+export interface IGetLogic {
+  proxy: string;
+  proxyAdmin?: string;
+}
+
+export interface IChangeLogic {
+  proxy: string;
+  proxyAdmin?: string;
+  newLogic: string;
   relativePath?: string;
   password: string;
   mnemonicPhrase?: string;
