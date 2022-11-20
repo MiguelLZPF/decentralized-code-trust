@@ -13,6 +13,7 @@ import { ADDR_ZERO, delay, setGlobalHRE } from "../scripts/utils";
 import { generateWalletBatch } from "../scripts/wallets";
 import { INetwork } from "../models/Deploy";
 import { Block, JsonRpcProvider } from "@ethersproject/providers";
+import { Mnemonic } from "ethers/lib/utils";
 
 let ethers = HRE.ethers;
 let provider: JsonRpcProvider;
@@ -43,7 +44,11 @@ describe("CodeTrust", () => {
       undefined,
       TEST.accountNumber,
       undefined,
-      KEYSTORE.default.mnemonic,
+      {
+        phrase: KEYSTORE.default.mnemonic.phrase,
+        path: KEYSTORE.default.mnemonic.basePath,
+        locale: KEYSTORE.default.mnemonic.locale,
+      } as Mnemonic,
       true
     );
   });
