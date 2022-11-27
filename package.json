@@ -1,6 +1,6 @@
 {
   "name": "decentralized-code-trust",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "This project is part of the **Decentralized Trust Framework** and it aims to provide a decentralized trust for any address to trust code on Blockchain (Smart Contracts) and know wich code it trust or not",
   "main": "index.js",
   "scripts": {
