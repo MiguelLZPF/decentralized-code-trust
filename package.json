@@ -4,7 +4,7 @@
   "description": "This project is part of the **Decentralized Trust Framework** and it aims to provide a decentralized trust for any address to trust code on Blockchain (Smart Contracts) and know wich code it trust or not",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat run scripts/ganache.ts && npx hardhat test --network ganache"
   },
   "author": "Miguel Gómez Carpena",
   "license": "BSD-3-Clause",
