@@ -1,6 +1,6 @@
 {
   "name": "decentralized-code-trust",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "This project is part of the **Decentralized Trust Framework** and it aims to provide a decentralized trust for any address to trust code on Blockchain (Smart Contracts) and know wich code it trust or not",
   "main": "index.js",
   "scripts": {
@@ -40,7 +40,7 @@
     "ganache": "^7.5.0",
     "hardhat": "^2.12.2",
     "hardhat-contract-sizer": "^2.6.1",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.0",
     "prettier-plugin-solidity": "^1.0.0",
     "yesno": "^0.4.0"
   }

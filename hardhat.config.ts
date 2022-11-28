@@ -327,7 +327,7 @@ task("upgrade", "Upgrade smart contracts on '--network'")
   )
   .addFlag("noCompile", "Do not compile contracts before upgrade")
   .setAction(async (args: IUpgrade, hre) => {
-    setGlobalHRE(hre);
+    await setGlobalHRE(hre);
     if (!args.noCompile) {
       await hre.run("compile");
     }
@@ -630,12 +630,14 @@ const config: HardhatUserConfig = {
     enabled: true,
     currency: "EUR",
   },
-  // typechain: {
-  //   externalArtifacts: [ //! NOT WORKING: export extrange error
-  //     "node_modules/@openzeppelin/contracts/build/contracts/ProxyAdmin.json",
-  //     "node_modules/@openzeppelin/contracts/build/contracts/TransparentUpgradeableProxy.json",
-  //   ],
-  // },
+  typechain: {
+    target: "ethers-v5",
+    externalArtifacts: [
+      //! NOT WORKING: export extrange error
+      "node_modules/@openzeppelin/contracts/build/contracts/ProxyAdmin.json",
+      "node_modules/@openzeppelin/contracts/build/contracts/TransparentUpgradeableProxy.json",
+    ],
+  },
 };
 
 export default config;
