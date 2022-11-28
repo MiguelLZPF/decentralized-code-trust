@@ -76,19 +76,19 @@ describe("CodeTrust", () => {
 
   describe("EOA trusts code", () => {
     it("Should FAIL to trust without duration", async () => {
-      await expect(codeTrust.trustCodeAt(codeTrust.address, 0, GAS_OPT.max)).to.be.revertedWith(
+      expect(codeTrust.trustCodeAt(codeTrust.address, 0, GAS_OPT.max)).to.be.revertedWith(
         REVERT_MESSAGES.trustCodeAt.paramDuration
       );
     });
     it("Should FAIL to trust with duration less than 10 seconds", async () => {
-      await expect(codeTrust.trustCodeAt(codeTrust.address, 9, GAS_OPT.max)).to.be.revertedWith(
+      expect(codeTrust.trustCodeAt(codeTrust.address, 9, GAS_OPT.max)).to.be.revertedWith(
         REVERT_MESSAGES.trustCodeAt.paramDuration
       );
     });
     it("Should FAIL to trust with duration greater than 1 year", async () => {
-      await expect(
-        codeTrust.trustCodeAt(codeTrust.address, 31536001, GAS_OPT.max)
-      ).to.be.revertedWith(REVERT_MESSAGES.trustCodeAt.paramDuration);
+      expect(codeTrust.trustCodeAt(codeTrust.address, 31536001, GAS_OPT.max)).to.be.revertedWith(
+        REVERT_MESSAGES.trustCodeAt.paramDuration
+      );
     });
     step("Should set trust on contract", async () => {
       let trusted = await codeTrust.isTrustedCode(
