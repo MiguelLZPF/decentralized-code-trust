@@ -1,49 +1,46 @@
-import { expect } from "chai";
-import { step } from "mocha-steps";
+import { GAS_OPT, KEYSTORE, TEST } from "configuration";
 import * as HRE from "hardhat";
-import { Wallet, ContractReceipt } from "ethers";
-import { GAS_OPT, KEYSTORE, TEST } from "../configuration";
-import {
-  CodeTrust__factory,
-  DumbExample,
-  DumbExample__factory,
-  ICodeTrust,
-} from "../typechain-types";
-import { ADDR_ZERO, delay, setGlobalHRE } from "../scripts/utils";
-import { generateWalletBatch } from "../scripts/wallets";
-import { INetwork } from "../models/Deploy";
-import { Block, JsonRpcProvider } from "@ethersproject/providers";
-import { Mnemonic } from "ethers/lib/utils";
-import { Contract } from "hardhat/internal/hardhat-network/stack-traces/model";
+import { step } from "mocha-steps";
+import { expect } from "chai";
+import { ContractReceipt, Wallet } from "ethers";
+import { TransactionReceipt, Block, JsonRpcProvider } from "@ethersproject/providers";
+import { Mnemonic, isAddress } from "ethers/lib/utils";
+import { generateWallets } from "scripts/wallets";
+import { ADDR_ZERO, delay, getContractInstance, setGlobalHRE } from "scripts/utils";
+import { INetwork } from "models/Configuration";
+import { deploy } from "scripts/deploy";
+import { DumbExample, ICodeTrust } from "typechain-types";
 
-let ethers = HRE.ethers;
-let provider: JsonRpcProvider;
-let network: INetwork;
-
+// Specific Constants
+const CONTRACT_NAME = "CodeTrust";
+const CODETRUST_DEPLOYED_AT = undefined;
 const REVERT_MESSAGES = {
   trustCodeAt: {
     paramDuration: "Invalid duration, check Doc",
   },
 };
 
+// General Variables
+let provider: JsonRpcProvider;
+let network: INetwork;
 let accounts: Wallet[];
-
-let codeTrustFactory: CodeTrust__factory;
-let dumbExampleFactory: DumbExample__factory;
-
+let lastReceipt: ContractReceipt | TransactionReceipt;
+let lastBlock: Block;
+// Specific Variables
+// -- wallets | accounts
+let admin: Wallet;
+let defaultUser: Wallet;
+// -- contracts
 let codeTrust: ICodeTrust;
 let dumbContract: DumbExample;
 
-let lastReceipt: ContractReceipt;
-let lastBlock: Block;
-
 describe("CodeTrust", () => {
-  before("Init provider, network and wallets", async () => {
-    ({ gProvider: provider, gCurrentNetwork: network } = await setGlobalHRE(HRE));
+  before("Generate test Accounts", async () => {
+    ({ gProvider: provider, gNetwork: network } = await setGlobalHRE(HRE));
     lastBlock = await provider.getBlock("latest");
     console.log(`Connected to network: ${network.name} (latest block: ${lastBlock.number})`);
     // Generate TEST.accountNumber wallets
-    accounts = await generateWalletBatch(
+    accounts = await generateWallets(
       undefined,
       undefined,
       TEST.accountNumber,
@@ -55,38 +52,62 @@ describe("CodeTrust", () => {
       } as Mnemonic,
       true
     );
+    // set specific roles
+    admin = accounts[0];
+    defaultUser = accounts[1];
   });
 
-  describe("Deployment", () => {
-    step("Should deploy CodeTrust contract", async () => {
-      codeTrustFactory = await ethers.getContractFactory("CodeTrust", accounts[0]);
-      codeTrust = await codeTrustFactory.deploy(GAS_OPT.max);
-      lastReceipt = await codeTrust.deployTransaction.wait();
-      expect(ethers.utils.isAddress(codeTrust.address)).to.be.true;
-      expect(lastReceipt.contractAddress).to.equal(codeTrust.address);
-    });
-    step("Should deploy CommunityManager contract", async () => {
-      dumbExampleFactory = await ethers.getContractFactory("DumbExample", accounts[0]);
-      dumbContract = await dumbExampleFactory.deploy(codeTrust.address, GAS_OPT.max);
-      lastReceipt = await dumbContract.deployTransaction.wait();
-      expect(ethers.utils.isAddress(dumbContract.address)).to.be.true;
-      expect(lastReceipt.contractAddress).to.equal(dumbContract.address);
+  describe("Deployment and Initialization", () => {
+    if (CODETRUST_DEPLOYED_AT) {
+      step("Should create contract instance", async () => {
+        codeTrust = (await getContractInstance(CONTRACT_NAME, admin)) as ICodeTrust;
+        expect(isAddress(codeTrust.address)).to.be.true;
+        expect(codeTrust.address).to.equal(CODETRUST_DEPLOYED_AT);
+        console.log(`${CONTRACT_NAME} recovered at: ${codeTrust.address}`);
+      });
+    } else {
+      step("Should deploy contract", async () => {
+        const deployResult = await deploy(CONTRACT_NAME, admin, [], undefined, GAS_OPT.max, false);
+        codeTrust = deployResult.contractInstance as ICodeTrust;
+        expect(isAddress(codeTrust.address)).to.be.true;
+        expect(codeTrust.address).not.to.equal(ADDR_ZERO);
+        console.log(`NEW ${CONTRACT_NAME} deployed at: ${codeTrust.address}`);
+      });
+      // step("Should check if correct initialization", async () => {
+      //   const response = await storage.retrieve();
+      //   expect(response).equal(INIT_VALUE);
+      // });
+    }
+
+    step("Should deploy DumbExample contract", async () => {
+      const deployResult = await deploy(
+        "DumbExample",
+        admin,
+        [codeTrust.address],
+        undefined,
+        GAS_OPT.max,
+        false
+      );
+      dumbContract = deployResult.contractInstance as DumbExample;
+      expect(isAddress(dumbContract.address)).to.be.true;
+      expect(dumbContract.address).not.to.equal(ADDR_ZERO);
+      console.log(`NEW DumbExample deployed at: ${dumbContract.address}`);
     });
   });
 
   describe("EOA trusts code", () => {
     it("Should FAIL to trust without duration", async () => {
-      expect(codeTrust.trustCodeAt(codeTrust.address, 0, GAS_OPT.max)).to.be.revertedWith(
+      expect(codeTrust.trustCodeAt(codeTrust.address, 0, GAS_OPT.max)).to.be.rejectedWith(
         REVERT_MESSAGES.trustCodeAt.paramDuration
       );
     });
     it("Should FAIL to trust with duration less than 10 seconds", async () => {
-      expect(codeTrust.trustCodeAt(codeTrust.address, 9, GAS_OPT.max)).to.be.revertedWith(
+      expect(codeTrust.trustCodeAt(codeTrust.address, 9, GAS_OPT.max)).to.be.rejectedWith(
         REVERT_MESSAGES.trustCodeAt.paramDuration
       );
     });
     it("Should FAIL to trust with duration greater than 1 year", async () => {
-      expect(codeTrust.trustCodeAt(codeTrust.address, 31536001, GAS_OPT.max)).to.be.revertedWith(
+      expect(codeTrust.trustCodeAt(codeTrust.address, 31536001, GAS_OPT.max)).to.be.rejectedWith(
         REVERT_MESSAGES.trustCodeAt.paramDuration
       );
     });
