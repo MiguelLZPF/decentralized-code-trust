@@ -3,20 +3,32 @@ import * as HRE from "hardhat";
 import { step } from "mocha-steps";
 import { expect } from "chai";
 import { ContractReceipt, Wallet } from "ethers";
-import { TransactionReceipt, Block, JsonRpcProvider } from "@ethersproject/providers";
+import {
+  TransactionReceipt,
+  Block,
+  JsonRpcProvider,
+} from "@ethersproject/providers";
 import { Mnemonic, isAddress } from "ethers/lib/utils";
 import { generateWallets } from "scripts/wallets";
-import { ADDR_ZERO, delay, getContractInstance, setGlobalHRE } from "scripts/utils";
+import {
+  ADDR_ZERO,
+  delay,
+  getContractInstance,
+  setGlobalHRE,
+} from "scripts/utils";
 import { INetwork } from "models/Configuration";
 import { deploy } from "scripts/deploy";
-import { DumbExample, ICodeTrust } from "typechain-types";
+import { ICodeTrust, TrustedExample, TrusterExample } from "typechain-types";
 
 // Specific Constants
 const CONTRACT_NAME = "CodeTrust";
 const CODETRUST_DEPLOYED_AT = undefined;
 const REVERT_MESSAGES = {
-  trustCodeAt: {
+  codeTrust: {
     paramDuration: "Invalid duration, check Doc",
+  },
+  truster: {
+    notTrusted: "Not trusted code",
   },
 };
 
@@ -32,13 +44,16 @@ let admin: Wallet;
 let defaultUser: Wallet;
 // -- contracts
 let codeTrust: ICodeTrust;
-let dumbContract: DumbExample;
+let trustedExample: TrustedExample;
+let trusterExample: TrusterExample;
 
 describe("CodeTrust", () => {
   before("Generate test Accounts", async () => {
     ({ gProvider: provider, gNetwork: network } = await setGlobalHRE(HRE));
     lastBlock = await provider.getBlock("latest");
-    console.log(`Connected to network: ${network.name} (latest block: ${lastBlock.number})`);
+    console.log(
+      `Connected to network: ${network.name} (latest block: ${lastBlock.number})`
+    );
     // Generate TEST.accountNumber wallets
     accounts = await generateWallets(
       undefined,
@@ -60,14 +75,24 @@ describe("CodeTrust", () => {
   describe("Deployment and Initialization", () => {
     if (CODETRUST_DEPLOYED_AT) {
       step("Should create contract instance", async () => {
-        codeTrust = (await getContractInstance(CONTRACT_NAME, admin)) as ICodeTrust;
+        codeTrust = (await getContractInstance(
+          CONTRACT_NAME,
+          admin
+        )) as ICodeTrust;
         expect(isAddress(codeTrust.address)).to.be.true;
         expect(codeTrust.address).to.equal(CODETRUST_DEPLOYED_AT);
         console.log(`${CONTRACT_NAME} recovered at: ${codeTrust.address}`);
       });
     } else {
       step("Should deploy contract", async () => {
-        const deployResult = await deploy(CONTRACT_NAME, admin, [], undefined, GAS_OPT.max, false);
+        const deployResult = await deploy(
+          CONTRACT_NAME,
+          admin,
+          [],
+          undefined,
+          GAS_OPT.max,
+          false
+        );
         codeTrust = deployResult.contractInstance as ICodeTrust;
         expect(isAddress(codeTrust.address)).to.be.true;
         expect(codeTrust.address).not.to.equal(ADDR_ZERO);
@@ -79,37 +104,52 @@ describe("CodeTrust", () => {
       // });
     }
 
-    step("Should deploy DumbExample contract", async () => {
+    step("Should deploy TrusterExample contract", async () => {
       const deployResult = await deploy(
-        "DumbExample",
+        "TrusterExample",
         admin,
         [codeTrust.address],
         undefined,
         GAS_OPT.max,
         false
       );
-      dumbContract = deployResult.contractInstance as DumbExample;
-      expect(isAddress(dumbContract.address)).to.be.true;
-      expect(dumbContract.address).not.to.equal(ADDR_ZERO);
-      console.log(`NEW DumbExample deployed at: ${dumbContract.address}`);
+      trusterExample = deployResult.contractInstance as TrusterExample;
+      expect(isAddress(trusterExample.address)).to.be.true;
+      expect(trusterExample.address).not.to.equal(ADDR_ZERO);
+      console.log(`NEW TrusterExample deployed at: ${trusterExample.address}`);
+    });
+
+    step("Should deploy TrustedExample contract", async () => {
+      const deployResult = await deploy(
+        "TrustedExample",
+        admin,
+        [],
+        undefined,
+        GAS_OPT.max,
+        false
+      );
+      trustedExample = deployResult.contractInstance as TrustedExample;
+      expect(isAddress(trustedExample.address)).to.be.true;
+      expect(trustedExample.address).not.to.equal(ADDR_ZERO);
+      console.log(`NEW TrustedExample deployed at: ${trustedExample.address}`);
     });
   });
 
   describe("EOA trusts code", () => {
     it("Should FAIL to trust without duration", async () => {
-      expect(codeTrust.trustCodeAt(codeTrust.address, 0, GAS_OPT.max)).to.be.rejectedWith(
-        REVERT_MESSAGES.trustCodeAt.paramDuration
-      );
+      expect(
+        codeTrust.trustCodeAt(codeTrust.address, 0, GAS_OPT.max)
+      ).to.be.rejectedWith(REVERT_MESSAGES.codeTrust.paramDuration);
     });
     it("Should FAIL to trust with duration less than 10 seconds", async () => {
-      expect(codeTrust.trustCodeAt(codeTrust.address, 9, GAS_OPT.max)).to.be.rejectedWith(
-        REVERT_MESSAGES.trustCodeAt.paramDuration
-      );
+      expect(
+        codeTrust.trustCodeAt(codeTrust.address, 9, GAS_OPT.max)
+      ).to.be.rejectedWith(REVERT_MESSAGES.codeTrust.paramDuration);
     });
     it("Should FAIL to trust with duration greater than 1 year", async () => {
-      expect(codeTrust.trustCodeAt(codeTrust.address, 31536001, GAS_OPT.max)).to.be.rejectedWith(
-        REVERT_MESSAGES.trustCodeAt.paramDuration
-      );
+      expect(
+        codeTrust.trustCodeAt(codeTrust.address, 31536001, GAS_OPT.max)
+      ).to.be.rejectedWith(REVERT_MESSAGES.codeTrust.paramDuration);
     });
     step("Should set trust on contract", async () => {
       let trusted = await codeTrust.isTrustedCode(
@@ -137,64 +177,86 @@ describe("CodeTrust", () => {
       );
       expect(trusted).to.be.true;
       // UNtrust code at
-      lastReceipt = await (await codeTrust.untrustCodeAt(codeTrust.address, GAS_OPT.max)).wait();
-      trusted = await codeTrust.isTrustedCode(
-        codeTrust.address,
-        ADDR_ZERO,
-        Math.floor(Date.now() / 1000)
-      );
-      expect(trusted).to.be.false;
-    });
-
-    step("Should untrust a previously trusted contract by TIMEOUT", async () => {
-      let trusted = await codeTrust.isTrustedCode(
-        codeTrust.address,
-        ADDR_ZERO,
-        Math.floor(Date.now() / 1000)
-      );
-      expect(trusted).to.be.false;
-      // trust code at
-      lastReceipt = await (await codeTrust.trustCodeAt(codeTrust.address, 10, GAS_OPT.max)).wait();
-      trusted = await codeTrust.isTrustedCode(
-        codeTrust.address,
-        ADDR_ZERO,
-        Math.floor(Date.now() / 1000)
-      );
-      expect(trusted).to.be.true;
-      await delay(16000);
-      trusted = await codeTrust.isTrustedCode(
-        codeTrust.address,
-        ADDR_ZERO,
-        Math.floor(Date.now() / 1000)
-      );
-      expect(trusted).to.be.false;
-    });
-  });
-
-  describe("Code trusts another code", () => {
-    step("Should set trust on contract without duration", async () => {
-      let trusted = await codeTrust.isTrustedCode(
-        codeTrust.address,
-        dumbContract.address,
-        Math.floor(Date.now() / 1000)
-      );
-      expect(trusted).to.be.false;
-      // from contract
-      trusted = await dumbContract.checkIfTrusted(codeTrust.address);
-      expect(trusted).to.be.false;
-      // trust code at
       lastReceipt = await (
-        await dumbContract.trustOneContract(codeTrust.address, GAS_OPT.max)
+        await codeTrust.untrustCodeAt(codeTrust.address, GAS_OPT.max)
       ).wait();
       trusted = await codeTrust.isTrustedCode(
         codeTrust.address,
-        dumbContract.address,
+        ADDR_ZERO,
         Math.floor(Date.now() / 1000)
       );
-      expect(trusted).to.be.true;
+      expect(trusted).to.be.false;
+    });
+
+    step(
+      "Should untrust a previously trusted contract by TIMEOUT",
+      async () => {
+        let trusted = await codeTrust.isTrustedCode(
+          codeTrust.address,
+          ADDR_ZERO,
+          Math.floor(Date.now() / 1000)
+        );
+        expect(trusted).to.be.false;
+        // trust code at
+        lastReceipt = await (
+          await codeTrust.trustCodeAt(codeTrust.address, 10, GAS_OPT.max)
+        ).wait();
+        trusted = await codeTrust.isTrustedCode(
+          codeTrust.address,
+          ADDR_ZERO,
+          Math.floor(Date.now() / 1000)
+        );
+        expect(trusted).to.be.true;
+        await delay(16000);
+        trusted = await codeTrust.isTrustedCode(
+          codeTrust.address,
+          ADDR_ZERO,
+          Math.floor(Date.now() / 1000)
+        );
+        expect(trusted).to.be.false;
+      }
+    );
+  });
+
+  describe("Usage Example", () => {
+    it("Should FAIL to be called from untrusted contract", async () => {
+      expect(
+        trustedExample.callContract(trusterExample.address, GAS_OPT.max)
+      ).to.be.rejectedWith(REVERT_MESSAGES.truster.notTrusted);
+    });
+    step("Should set trust on contract", async () => {
+      let isTrusted = await codeTrust.isTrustedCode(
+        trustedExample.address,
+        trusterExample.address,
+        Math.floor(Date.now() / 1000)
+      );
+      expect(isTrusted).to.be.false;
       // from contract
-      trusted = await dumbContract.checkIfTrusted(codeTrust.address);
-      expect(trusted).to.be.true;
+      isTrusted = await trusterExample.checkIfTrusted(trustedExample.address);
+      expect(isTrusted).to.be.false;
+      // trust code at
+      lastReceipt = await (
+        await trusterExample.trustOneContract(
+          trustedExample.address,
+          GAS_OPT.max
+        )
+      ).wait();
+      isTrusted = await codeTrust.isTrustedCode(
+        trustedExample.address,
+        trusterExample.address,
+        Math.floor(Date.now() / 1000)
+      );
+      expect(isTrusted).to.be.true;
+      // from contract
+      isTrusted = await trusterExample.checkIfTrusted(trustedExample.address);
+      expect(isTrusted).to.be.true;
+    });
+    step("Should be called from trusted contract", async () => {
+      // trust code at
+      lastReceipt = await (
+        await trustedExample.callContract(trusterExample.address, GAS_OPT.max)
+      ).wait();
+      expect(lastReceipt).not.to.be.undefined;
     });
   });
 });

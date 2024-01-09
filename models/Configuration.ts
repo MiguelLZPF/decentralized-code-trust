@@ -3,9 +3,16 @@ export type NetworkProtocol = "http" | "https" | "ws";
 export type NetworkName = "hardhat" | "ganache" | "mainTest"; // you can add whatever Network name here
 // IA generated
 export const CONTRACT_OZ_NAMES = ["ProxyAdmin", "TUP"] as const;
-export const CONTRACT_NAMES = ["CodeTrust", "DumbExample", "Trusteable"] as const;
+export const CONTRACT_NAMES = [
+  "CodeTrust",
+  "Trusteable",
+  "TrustedExample",
+  "TrusterExample",
+] as const;
 type UnionFromTuple<T extends readonly any[]> = T[number];
-export type ContractName = UnionFromTuple<typeof CONTRACT_OZ_NAMES | typeof CONTRACT_NAMES>;
+export type ContractName = UnionFromTuple<
+  typeof CONTRACT_OZ_NAMES | typeof CONTRACT_NAMES
+>;
 
 export interface INetwork {
   chainId: number;

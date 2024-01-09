@@ -4,6 +4,7 @@
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -22,20 +23,31 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
-export interface DumbExampleInterface extends utils.Interface {
+export interface TrusterExampleInterface extends utils.Interface {
   functions: {
     "checkIfTrusted(address)": FunctionFragment;
+    "dumbFunction(uint256)": FunctionFragment;
+    "someValue()": FunctionFragment;
     "trustOneContract(address)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "checkIfTrusted" | "trustOneContract"
+    nameOrSignatureOrTopic:
+      | "checkIfTrusted"
+      | "dumbFunction"
+      | "someValue"
+      | "trustOneContract"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "checkIfTrusted",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "dumbFunction",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(functionFragment: "someValue", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "trustOneContract",
     values: [PromiseOrValue<string>]
@@ -45,6 +57,11 @@ export interface DumbExampleInterface extends utils.Interface {
     functionFragment: "checkIfTrusted",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "dumbFunction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "someValue", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "trustOneContract",
     data: BytesLike
@@ -53,12 +70,12 @@ export interface DumbExampleInterface extends utils.Interface {
   events: {};
 }
 
-export interface DumbExample extends BaseContract {
+export interface TrusterExample extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: DumbExampleInterface;
+  interface: TrusterExampleInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -85,6 +102,13 @@ export interface DumbExample extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean] & { trusted: boolean }>;
 
+    dumbFunction(
+      value: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    someValue(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     trustOneContract(
       contractToTrust: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -96,6 +120,13 @@ export interface DumbExample extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  dumbFunction(
+    value: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  someValue(overrides?: CallOverrides): Promise<BigNumber>;
+
   trustOneContract(
     contractToTrust: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -106,6 +137,13 @@ export interface DumbExample extends BaseContract {
       contractToCheck: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    dumbFunction(
+      value: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    someValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     trustOneContract(
       contractToTrust: PromiseOrValue<string>,
@@ -121,6 +159,13 @@ export interface DumbExample extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    dumbFunction(
+      value: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    someValue(overrides?: CallOverrides): Promise<BigNumber>;
+
     trustOneContract(
       contractToTrust: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -132,6 +177,13 @@ export interface DumbExample extends BaseContract {
       contractToCheck: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    dumbFunction(
+      value: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    someValue(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     trustOneContract(
       contractToTrust: PromiseOrValue<string>,

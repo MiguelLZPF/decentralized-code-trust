@@ -3,4 +3,5 @@
 /* eslint-disable */
 export * as interfaces from "./interfaces";
 export { CodeTrust__factory } from "./CodeTrust__factory";
-export { DumbExample__factory } from "./DumbExample__factory";
+export { TrustedExample__factory } from "./TrustedExample__factory";
+export { TrusterExample__factory } from "./TrusterExample__factory";
