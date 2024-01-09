@@ -17,13 +17,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CodeTrust__factory>;
     getContractFactory(
-      name: "DumbExample",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.DumbExample__factory>;
-    getContractFactory(
       name: "ICodeTrust",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ICodeTrust__factory>;
+    getContractFactory(
+      name: "TrustedExample",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TrustedExample__factory>;
+    getContractFactory(
+      name: "TrusterExample",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TrusterExample__factory>;
     getContractFactory(
       name: "ProxyAdmin",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -39,15 +43,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.CodeTrust>;
     getContractAt(
-      name: "DumbExample",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.DumbExample>;
-    getContractAt(
       name: "ICodeTrust",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ICodeTrust>;
+    getContractAt(
+      name: "TrustedExample",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TrustedExample>;
+    getContractAt(
+      name: "TrusterExample",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TrusterExample>;
     getContractAt(
       name: "ProxyAdmin",
       address: string,

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity >=0.8.0 <0.9.0;
 
-import "contracts/usageExample/TrusterExample.sol";
+import "contracts/TrusterExample.sol";
 
 /**
  * @title TrustedExample

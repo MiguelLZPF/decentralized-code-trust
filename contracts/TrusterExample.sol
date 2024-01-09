@@ -19,7 +19,7 @@ contract TrusterExample is Truster {
     _codeTrust = systemCodeTrust;
   }
 
-  function dumbFunction(uint256 value) public onlyTrustedCode(msg.sender) {
+  function dumbFunction(uint256 value) public onlyTrustedCode {
     someValue = value;
   }
 

@@ -16,8 +16,8 @@ abstract contract Truster {
    * It checks if the specified contract is trusted code using the `_codeTrust.isTrustedCode` function.
    * If the contract is not trusted, it reverts with an error message.
    */
-  modifier onlyTrustedCode(address contractToCheck) {
-    require(_codeTrust.isTrustedCode(contractToCheck, address(0), 0), "Not trusted code");
+  modifier onlyTrustedCode() {
+    require(_codeTrust.isTrustedCode(msg.sender, address(0), 0), "Not trusted code");
     _;
   }
 }

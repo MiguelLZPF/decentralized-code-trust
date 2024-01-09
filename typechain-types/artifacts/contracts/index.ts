@@ -4,4 +4,5 @@
 import type * as interfaces from "./interfaces";
 export type { interfaces };
 export type { CodeTrust } from "./CodeTrust";
-export type { DumbExample } from "./DumbExample";
+export type { TrustedExample } from "./TrustedExample";
+export type { TrusterExample } from "./TrusterExample";
