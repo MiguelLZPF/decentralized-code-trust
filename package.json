@@ -1,6 +1,6 @@
 {
   "name": "decentralized-code-trust",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "This project is part of the Decentralized Trust Framework. It aims to provide a decentralized trust mechanism for any address to trust code on the Blockchain (Smart Contracts) and determine which code it trusts or not.",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,16 @@
     "url": "https://github.com/MiguelLZPF/decentralized-code-trust/issues"
   },
   "homepage": "https://github.com/MiguelLZPF/decentralized-code-trust",
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
+  "cpu": [
+    "any"
+  ],
+  "os": [
+    "any"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@openzeppelin/contracts": "^4.9.5",
