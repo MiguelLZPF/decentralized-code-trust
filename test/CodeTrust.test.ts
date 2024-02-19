@@ -180,6 +180,7 @@ describe("CodeTrust", () => {
       lastReceipt = await (
         await codeTrust.untrustCodeAt(codeTrust.address, GAS_OPT.max)
       ).wait();
+      await delay(1000);
       trusted = await codeTrust.isTrustedCode(
         codeTrust.address,
         ADDR_ZERO,
